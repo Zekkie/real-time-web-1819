@@ -1,7 +1,14 @@
+console.log(process.pid)
 const express = require("express");
 const app = express();
 const server = require("http").createServer(app)
 const io = require("socket.io")(server);
+
+const fs = require("fs");
+
+const Sentiment = require("sentiment");
+
+const analyzer = new Sentiment();
 
 const {dateFormatter} = require("./bin/helpers.js")
 
@@ -16,6 +23,12 @@ app.use(express.static("static"));
 
 apiManifest.manifest("./api.cnf");
 serverManifest.manifest("./server.cnf");
+
+
+
+const {fork} = require("child_process");
+
+const forkedProcess = fork("./jsonToFile.js");
 
 
 var keys = {
@@ -43,14 +56,11 @@ twitter.on('connection success', function (uri) {
 
 
 twitter.on("data", (d) => {
-
 	const data = JSON.parse(d.toString());
-
+    const sentiment = analyzer.analyze(data.text);
 	data.created_at = dateFormatter(data.created_at)
-
-
-
-	io.emit("data",data);
+    data.sentiment = sentiment;
+    forkedProcess.send(data);
 });
 
 

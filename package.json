@@ -10,6 +10,8 @@
   "description": "",
   "dependencies": {
     "express": "^4.16.4",
+    "mongodb": "^3.2.3",
+    "sentiment": "^5.0.1",
     "socket.io": "^2.2.0",
     "twitter-stream-api": "^0.5.2"
   }
