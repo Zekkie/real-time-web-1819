@@ -6,49 +6,40 @@ class Manifest{
 
 	manifest(file) {
 		this.file = fs.readFileSync(file).toString();
-		this.manifestProcess();
+		this.manifestProcess();	
 	}
 
-	fileToRawArray() {
-		return this.file.split(";");
+	removeNewLine() {
+		return this.file.replace(new RegExp("\n","g"),"");
 	};
 
-	removeEmptyIndex() {
-		const _arr = this.fileToRawArray();
-		_arr.splice(_arr.length-1,1)
+	splitCnf() {
+		return this.removeNewLine().split(";");
+	};
+
+	getKVP() {
+		const _arr = this.splitCnf();
+		_arr.splice(_arr.length-1,1);
 		return _arr;
 	}
 
-	removeLineBreak() {
-		const _arr = this.removeEmptyIndex();
+	splitKVP() {
+		const _arr = this.getKVP();
+		const _kvpArr = [];
+		
 		for(let i = 0; i < _arr.length; i++) {
-			_arr[i] = _arr[i].replace("\r\n", "");
+			_kvpArr.push(_arr[i].split(" "));
 		};
-		return _arr;
-	}
 
-	convertToKvp() {
-		const _arr = [];
-		for(let i = 0; i < this.removeLineBreak().length; i++) {
-			_arr.push(this.removeLineBreak()[i].split(" "))
-		}
-		return _arr;
+		return _kvpArr;
 	}
-
-	removeDoublePoint() {
-		const _arr = this.convertToKvp();
-		for(let i = 0; i < _arr.length; i++) {
-			_arr[i][0] = _arr[i][0].replace(":","");
-		};
-		return _arr;
-	}
-
+	
 	manifestProcess() {
-		const _arr = this.removeDoublePoint();
-		for(let i = 0; i < _arr.length; i++) {
+		const _arr = this.splitKVP();
+		for(let i = 0; i < _arr.length;i++) {
 			process.env[_arr[i][0]] = _arr[i][1];
-		};
-	};
+		}
+	}	
 
 };
 module.exports = Manifest;

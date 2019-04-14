@@ -24,7 +24,7 @@ app.use(express.static("static"));
 apiManifest.manifest("./api.cnf");
 serverManifest.manifest("./server.cnf");
 
-
+console.log(process.env);
 
 const {fork} = require("child_process");
 
