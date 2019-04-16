@@ -6,6 +6,13 @@ const fs = require("fs");
 const mongo = require("mongodb").MongoClient;
 const url = "mongodb://localhost:27017";
 
+const DictManifest = require("./bin/dictManifest.js");
+
+const characters = new DictManifest();
+
+const dictionairy = characters.manifest("./characters.dict");
+
+console.log(dictionairy)
 
 const bla = []
 
@@ -31,7 +38,7 @@ function toDB(obj) {
 	})
 }
 
-const dictionairy = ["jon", "arya", "sansa","ramsey","bolton","stark","lannister","tyrion","tyrell"];
+
 
 function nicerObj(input) {
 	let tText = ""

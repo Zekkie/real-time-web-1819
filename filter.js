@@ -2,7 +2,11 @@ console.log(process.pid+" HAS STARTED")
 const mongo = require("mongodb").MongoClient;
 const url = "mongodb://localhost:27017";
 
-const dictionairy = ["jon", "arya", "sansa","ramsey","bolton","stark","lannister","tyrion","tyrell"];
+const DictManifest = require("./bin/dictManifest.js");
+
+const characters = new DictManifest();
+
+const dictionairy = characters.manifest("./characters.dict");
 
 function filter() {
 	mongo.connect(url, (err, client) => {
