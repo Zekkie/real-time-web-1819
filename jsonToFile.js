@@ -22,11 +22,8 @@ process.on("message", msg => {
 function toDB(obj) {
 	mongo.connect(url, (err,client) => {
 		if(err) throw err;
-
 		const db = client.db("gotTweets");
-
 		const collection = db.collection("tweets");
-
 		collection.insertOne(obj, (err,res) => {
 			if(err) throw err;
 			client.close()

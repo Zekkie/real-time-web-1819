@@ -1,6 +1,9 @@
+#!/usr/bin/env nodejs
 console.log(process.pid+" HAS STARTED")
 const {fork} = require("child_process");
 const forkedProcess = fork("./jsonToFile.js");
+
+
 
 
 const express = require("express");
