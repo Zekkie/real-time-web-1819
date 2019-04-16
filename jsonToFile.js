@@ -34,7 +34,12 @@ function toDB(obj) {
 const dictionairy = ["jon", "arya", "sansa","ramsey","bolton","stark","lannister","tyrion","tyrell"];
 
 function nicerObj(input) {
-
+	let tText = ""
+	if(input.truncated) {
+		tText = input.extended_tweet.full_text
+	}else {
+		tText = input.text
+	}
 	const obj = {};
 	const{created_at,id_str,text,user,sentiment} = input;
 	const sentimentObj = {};
@@ -42,7 +47,7 @@ function nicerObj(input) {
 	sentimentObj.comparative = sentiment.comparative;
 	obj.time_stamp = created_at;
 	obj.id = id_str;
-	obj.content = text;
+	obj.content = tText;
 	obj.user = user.screen_name;
 	obj.user_id =+ user.id_str;
 	obj.sentiment = sentimentObj;
@@ -53,6 +58,8 @@ function nicerObj(input) {
 			obj.mentions.push(dictionairy[i]);
 		};
 	};
+
+	console.log(obj)
 	return obj;
 }
 

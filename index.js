@@ -59,8 +59,16 @@ twitter.on('connection success', function (uri) {
 
 twitter.on("data", (d) => {
 	const data = JSON.parse(d.toString());
-    const sentiment = analyzer.analyze(data.text);
-	data.created_at = dateFormatter(data.created_at)
+    let sentiment = {};
+
+
+    if(d.truncated) {
+        sentiment.analyze (d.extended_tweet.full_text);
+    }else {
+       sentiment = analyzer.analyze(d.text); 
+    }
+
+	data.created_at = dateFormatter(data.created_at);
     data.sentiment = sentiment;
     forkedProcess.send(data);
 });
