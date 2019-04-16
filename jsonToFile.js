@@ -26,10 +26,7 @@ function toDB(obj) {
 		const collection = db.collection("tweets");
 
 		collection.insertOne(obj, (err,res) => {
-			collection.find({}).toArray((e,items) => {
-			console.log(items);
 			client.close();
-		})
 		})		
 	})
 }

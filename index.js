@@ -1,4 +1,4 @@
-console.log(process.pid)
+#!/usr/bin/env nodejs
 const express = require("express");
 const app = express();
 const server = require("http").createServer(app)
