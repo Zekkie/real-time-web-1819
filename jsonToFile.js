@@ -1,6 +1,6 @@
 console.log(process.pid+" HAS STARTED")
-const {fork} = require("child_process");
-const filterFork = fork("./filter.js");
+//const {fork} = require("child_process");
+//const filterFork = fork("./filter.js");
 const fs = require("fs");
 
 const mongo = require("mongodb").MongoClient;

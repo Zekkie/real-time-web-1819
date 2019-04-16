@@ -62,12 +62,11 @@ twitter.on("data", (d) => {
     let sentiment = {};
 
 
-    if(d.truncated) {
-        sentiment.analyze (d.extended_tweet.full_text);
+    if(data.truncated) {
+       sentiment = analyzer.analyze(data.extended_tweet.full_text);
     }else {
-       sentiment = analyzer.analyze(d.text); 
+       sentiment = analyzer.analyze(data.text); 
     }
-
 	data.created_at = dateFormatter(data.created_at);
     data.sentiment = sentiment;
     forkedProcess.send(data);

@@ -17,21 +17,22 @@ function filter() {
 			for(let i = 0; i < items.length; i++) {
 				items[i].mentions = [];
 
-				const query = {_id: items[i]._id};
-
+				let query = {_id: items[i]._id};
+				
 				for(let j = 0; j < dictionairy.length; j++) {
 					if(items[i].content.toLowerCase().includes(dictionairy[j])) {
 						items[i].mentions.push(dictionairy[j]);
 					};
 				}
-				const newVal = {$set: items[i]};
+				let newVal = {$set: items[i]};
+				
 				collection.updateOne(query,newVal, (err,res) => {});
 			}
 			const timeEnd = new Date();
 			const timeEndMs = timeEnd.getTime();
 			console.log(timeEndMs - timeStart);
-			client.close();
-			process.exit(0);
+			//client.close();
+		
 		})
 
 	})
