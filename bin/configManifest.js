@@ -37,7 +37,7 @@ class Manifest{
 	manifestProcess() {
 		const _arr = this.splitKVP();
 		for(let i = 0; i < _arr.length;i++) {
-			process.env[_arr[i][0]] = _arr[i][1];
+			process.env[_arr[i][0].replace("\r", "")] = _arr[i][1];
 		}
 	}	
 

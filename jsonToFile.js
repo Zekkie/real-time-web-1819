@@ -1,8 +1,10 @@
+console.log(process.pid+" HAS STARTED")
+const {fork} = require("child_process");
+const filterFork = fork("./filter.js");
 const fs = require("fs");
 
 const mongo = require("mongodb").MongoClient;
 const url = "mongodb://localhost:27017";
-
 
 
 const bla = []
@@ -26,36 +28,39 @@ function toDB(obj) {
 		const collection = db.collection("tweets");
 
 		collection.insertOne(obj, (err,res) => {
-			collection.find({}).toArray((e,items) => {
-			console.log(items);
-			client.close();
-		})
+			if(err) throw err;
+			client.close()
 		})		
 	})
 }
 
+const dictionairy = ["jon", "arya", "sansa","ramsey","bolton","stark","lannister","tyrion","tyrell"];
+
 function nicerObj(input) {
+
 	const obj = {};
 	const{created_at,id_str,text,user,sentiment} = input;
-
 	const sentimentObj = {};
-
 	sentimentObj.score = sentiment.score;
 	sentimentObj.comparative = sentiment.comparative;
-
 	obj.time_stamp = created_at;
 	obj.id = id_str;
 	obj.content = text;
 	obj.user = user.screen_name;
 	obj.user_id =+ user.id_str;
 	obj.sentiment = sentimentObj;
-
 	obj.url = `https://twitter.com/${obj.user}/status/${obj.id}`;
-
-
-	
-
-	return obj
-
-
+	obj.mentions = [];
+	for(let i = 0; i < dictionairy.length; i++) {
+		if(obj.content.toLowerCase().includes(dictionairy[i])) {
+			obj.mentions.push(dictionairy[i]);
+		};
+	};
+	return obj;
 }
+
+
+
+
+
+

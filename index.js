@@ -1,17 +1,16 @@
-console.log(process.pid)
+console.log(process.pid+" HAS STARTED")
+const {fork} = require("child_process");
+const forkedProcess = fork("./jsonToFile.js");
+
+
 const express = require("express");
 const app = express();
 const server = require("http").createServer(app)
 const io = require("socket.io")(server);
-
 const fs = require("fs");
-
 const Sentiment = require("sentiment");
-
 const analyzer = new Sentiment();
-
 const {dateFormatter} = require("./bin/helpers.js")
-
 const TwitterStream = require("twitter-stream-api");
 const Manifest = require("./bin/configManifest.js");
 
@@ -24,11 +23,9 @@ app.use(express.static("static"));
 apiManifest.manifest("./api.cnf");
 serverManifest.manifest("./server.cnf");
 
-console.log(process.env);
 
-const {fork} = require("child_process");
 
-const forkedProcess = fork("./jsonToFile.js");
+
 
 
 var keys = {
@@ -38,10 +35,12 @@ var keys = {
     token_secret : process.env.TOKEN_SECRET
 };
 
+
+
 const twitter = new TwitterStream(keys,false);
 
 
-twitter.stream("statuses/filter",{track:"#got", language:"en"});
+twitter.stream("statuses/filter",{track:"#got", language:"en",tweet_mode:"extended"});
 
 
 twitter.on('connection error http', function (httpStatusCode) {
