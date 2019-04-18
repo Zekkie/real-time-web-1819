@@ -21,12 +21,15 @@ const bla = []
 process.on("message", msg => {
 	const pattern = "RT @";
 	if(msg.in_reply_to_status_id === null && msg.text.indexOf(pattern) < 0 && msg.quoted_status_id === undefined) {
-		toDB(nicerObj(msg))
+		const forDb = nicerObj(msg);
+		
+		if(forDb) toDB(forDb);
 	}
 })
 
 
 function toDB(obj) {
+	console.log("insertion");
 	mongo.connect(url, (err,client) => {
 		if(err) throw err;
 		const db = client.db("gotTweets");
@@ -41,11 +44,14 @@ function toDB(obj) {
 
 
 function nicerObj(input) {
+	const pattern = new RegExp("(?:https?|ftp):\/\/[\n\S]+","g")
 	let tText = ""
 	if(input.truncated) {
-		tText = input.extended_tweet.full_text
+		tText = input.extended_tweet.full_text.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '');
+		console.log(tText);
 	}else {
-		tText = input.text
+		tText = input.text.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '');
+		console.log(tText);
 	}
 	const obj = {};
 	const{created_at,id_str,text,user,sentiment} = input;
@@ -66,8 +72,10 @@ function nicerObj(input) {
 		};
 	};
 
-	console.log(obj)
-	return obj;
+	if(tText.length > 0){
+		console.log(obj); 
+		return obj;
+	}
 }
 
 
