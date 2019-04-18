@@ -72,7 +72,7 @@ function nicerObj(input) {
 		};
 	};
 
-	if(tText.length > 0){
+	if(tText.length > 0 && obj.mentions.length > 0 && obj.sentiment.score !== 0){
 		console.log(obj); 
 		return obj;
 	}
