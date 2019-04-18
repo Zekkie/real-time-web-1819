@@ -12,7 +12,6 @@ const characters = new DictManifest();
 
 const dictionairy = characters.manifest("./characters.dict");
 
-console.log(dictionairy)
 
 const bla = []
 
@@ -48,10 +47,8 @@ function nicerObj(input) {
 	let tText = ""
 	if(input.truncated) {
 		tText = input.extended_tweet.full_text.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '');
-		console.log(tText);
 	}else {
 		tText = input.text.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '');
-		console.log(tText);
 	}
 	const obj = {};
 	const{created_at,id_str,text,user,sentiment} = input;
@@ -73,7 +70,6 @@ function nicerObj(input) {
 	};
 
 	if(tText.length > 0 && obj.mentions.length > 0 && obj.sentiment.score !== 0){
-		console.log(obj); 
 		return obj;
 	}
 }
