@@ -3,9 +3,10 @@ console.log(process.pid+" HAS STARTED")
 const {fork} = require("child_process");
 const forkedProcess = fork("./jsonToFile.js");
 
-
-
-
+const DictManifest = require("./bin/dictManifest.js");
+const characters = new DictManifest();
+const dictionairy = characters.manifest("./characters.dict");
+const Observer = require("./bin/Observer.js");
 const express = require("express");
 const app = express();
 const server = require("http").createServer(app)
@@ -16,6 +17,34 @@ const analyzer = new Sentiment();
 const {dateFormatter} = require("./bin/helpers.js")
 const TwitterStream = require("twitter-stream-api");
 const Manifest = require("./bin/configManifest.js");
+
+class Namespace{
+    constructor(name) {
+        this.name = name
+        this.ns = io.of("/"+name);
+        this.ns.on("connection",(socket) => {
+            //console.log("foo bar connected to: " + this.name)
+        });
+    }
+}
+
+
+
+const namespaceObserver = new Observer();
+
+for(let i = 0; i < dictionairy.length; i++) {
+    namespaceObserver.subscribe(new Namespace(dictionairy[i]));
+};
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29,7 +58,9 @@ serverManifest.manifest("./server.cnf");
 
 
 
-
+io.on("connection",(socket) =>{
+    //console.log(socket)
+})
 
 
 var keys = {
@@ -81,3 +112,7 @@ app.get("/",(req, res) => {
 server.listen(process.env.PORT, function() {
 	console.log("SERVER RUNNING ON PORT: " + process.env.PORT);
 });
+
+forkedProcess.on("message",(d) => {
+    namespaceObserver.update(d);
+})

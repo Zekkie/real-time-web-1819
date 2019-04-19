@@ -15,6 +15,7 @@ I will use the livestreaming API from twitter.
 ![alt text](./doc/data-ls.png "Logo Title Text 1")
 
 ## Sketch
+![alt text](./doc/sketch.png "Logo Title Text 1")
 
 
 
