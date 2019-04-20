@@ -23,7 +23,7 @@ class Namespace{
         this.name = name
         this.ns = io.of("/"+name);
         this.ns.on("connection",(socket) => {
-            //console.log("foo bar connected to: " + this.name)
+            console.log("foo bar connected to: " + this.name)
         });
     }
 }
@@ -59,7 +59,7 @@ serverManifest.manifest("./server.cnf");
 
 
 io.on("connection",(socket) =>{
-    //console.log(socket)
+   socket.emit("data", dictionairy)
 })
 
 
