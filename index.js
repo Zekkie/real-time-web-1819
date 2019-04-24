@@ -1,5 +1,5 @@
 #!/usr/bin/env nodejs
-console.log(process.pid+" HAS STARTED")
+
 const {fork} = require("child_process");
 const forkedProcess = fork("./jsonToFile.js");
 
@@ -18,12 +18,18 @@ const {dateFormatter} = require("./bin/helpers.js")
 const TwitterStream = require("twitter-stream-api");
 const Manifest = require("./bin/configManifest.js");
 
+const MyFirstAvarage = require("./bin/getAvg.js");
+
+
 class Namespace{
     constructor(name) {
         this.name = name
         this.ns = io.of("/"+name);
         this.ns.on("connection",(socket) => {
-            console.log("foo bar connected to: " + this.name)
+            const conn = new MyFirstAvarage(this.name);
+            conn.onConnection((a) => {
+                socket.emit("avg",{array:a, name: this.name});
+            });
         });
     }
 }
@@ -38,16 +44,6 @@ for(let i = 0; i < dictionairy.length; i++) {
 
 
 
-
-
-
-
-
-
-
-
-
-
 const apiManifest = new Manifest();
 const serverManifest = new Manifest();
 
@@ -59,7 +55,7 @@ serverManifest.manifest("./server.cnf");
 
 
 io.on("connection",(socket) =>{
-   socket.emit("data", dictionairy)
+   socket.emit("names", dictionairy)
 })
 
 

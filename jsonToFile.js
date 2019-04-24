@@ -1,10 +1,8 @@
 console.log(process.pid+" HAS STARTED")
-//const {fork} = require("child_process");
-//const filterFork = fork("./filter.js");
-const fs = require("fs");
+
 
 const mongo = require("mongodb").MongoClient;
-const url = "mongodb://localhost:27017";
+const url = "mongodb://134.209.9.142:27017";
 const DictManifest = require("./bin/dictManifest.js");
 const characters = new DictManifest();
 const dictionairy = characters.manifest("./characters.dict");
@@ -14,7 +12,6 @@ process.on("message", msg => {
 	const pattern = "RT @";
 	if(msg.in_reply_to_status_id === null && msg.text.indexOf(pattern) < 0 && msg.quoted_status_id === undefined) {
 		const forDb = nicerObj(msg);
-		
 		if(forDb){
 			toDB(forDb);
 			process.send(forDb);
