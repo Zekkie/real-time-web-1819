@@ -64,7 +64,6 @@ class Chart{
 	}
 
 	getMinMaxX(d) {
-		console.log(d)
 		const values = [];
 		for(let i = 0; i < d.length; i++) {
 			for(let j = 0; j < d[i].values.length; j++) {
@@ -97,6 +96,17 @@ class Chart{
 
 
 	};
+
+	updateLine() {
+		const line = d3.line().x(function(d) {
+			return this.scaleX(d.hour);
+			}.bind(this)).y(function(d) {
+			return this.scaleY(d.avg);
+			}.bind(this));
+
+		return line;
+
+	}
 
 	constructChart(d) {
 		const minMaxY = this.getMinMaxY(d);
@@ -131,7 +141,6 @@ class Chart{
 		for(let i = 0; i < d.length; i++) {
 			
 			if(!document.querySelector(".line-"+d[i].name)) {
-				console.log("boo")
 				this.constructLine(d[i]);
 			};
 		};
@@ -153,7 +162,6 @@ class NS{
 		this.name = name;
 		this.ns = io.connect(window.location.origin+"/"+name)
 		this.ns.on("avg", (d) => {
-			console.log(d)
 			data.push(d);
 			
 			if(!document.querySelector("svg")) {
@@ -163,6 +171,14 @@ class NS{
 				chart.updateChartUI(data);
 			}
 			
+		})
+
+		this.ns.on("data", d => {
+			const line = chart.updateLine();
+
+			console.log(line);
+			const svg = d3.select("svg");
+			svg.select(".line-"+d.name).attr("d",line(d.values));
 		})
 
 	};

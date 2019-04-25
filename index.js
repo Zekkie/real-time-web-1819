@@ -15,7 +15,7 @@ const analyzer = new Sentiment();
 const {dateFormatter} = require("./bin/helpers.js")
 const TwitterStream = require("twitter-stream-api");
 const Manifest = require("./bin/configManifest.js");
-const MyFirstAvarage = require("./bin/getAvg.js");
+const NewAvarage = require("./bin/getAvg.js");
 
 
 class Namespace{
@@ -23,11 +23,16 @@ class Namespace{
         this.name = name
         this.ns = io.of("/"+name);
         this.ns.on("connection",(socket) => {
-            const conn = new MyFirstAvarage(this.name);
-            conn.onConnection((a) => {
+            const conn = new NewAvarage(this.name);
+            conn.onNew((a) => {
                 socket.emit("avg",{values:a, name: this.name});
+                //console.log("boop",a)
             });
         });
+    }
+
+    emit(data){
+        this.ns.emit("data", data)
     }
 }
 const namespaceObserver = new Observer();

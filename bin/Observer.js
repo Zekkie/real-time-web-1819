@@ -1,3 +1,5 @@
+const NewAvarage = require("./getAvg.js");
+
 class Observer {
 	constructor(props) {
 	  this.observers = []
@@ -10,8 +12,15 @@ class Observer {
 	update(data) {
 		for(let i = 0; i < this.observers.length; i++) {
 			if(data.mentions.includes(this.observers[i].name)) {
-				this.observers[i].ns.emit("data", data);
-				console.log(data.mentions, "from observer to: " + this.observers[i].name)
+				const conn = new NewAvarage(this.observers[i].name);
+				conn.onNew((a) => {
+					//console.log(this.observers[i].name + " has new data")
+					this.observers[i].emit({name:this.observers[i].name,values:a});
+					
+				})
+				
+				//console.log("data for: " + this.observers[i].name);
+			
 			};
 		};
 	};
