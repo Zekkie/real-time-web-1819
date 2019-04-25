@@ -118,6 +118,13 @@ class Chart{
 			.attr("width",this.width)
 			.attr("height",this.height);
 
+		svg.append("text").text("Hours")
+			.style("transform","translate("+(this.width/2)+"px,"+(this.width/2)+"px)")
+
+		svg.append("text").text("Sentiment")
+			.style("transform","rotate(-90deg)")
+			.attr("x",-220)
+			.attr("y",20)
 		svg.append("g")
 			.attr("class", "axis-y")
 			.style("transform","translate(50px,40px)")
