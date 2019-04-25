@@ -1,12 +1,15 @@
 class RollingAvarage {
 	tokenize(arr) {
+
 		const tokens = arr.map((i) => {
 			const hour = new Date(i.time_stamp).getHours();
 			return {hour:hour,score:i.sentiment.score};
 		});
+
 		let hours = this.getHours(tokens);
 		const split = this.splitTokens(tokens,hours);
 		return split;
+
 	};
 	getAvarage(arr) {
 		let sum = 0;
@@ -26,6 +29,7 @@ class RollingAvarage {
 			avgArr.push(obj);
 			sum = 0;
 		};
+
 		return avgArr;
 	}
 	splitTokens(tokens,time) {
