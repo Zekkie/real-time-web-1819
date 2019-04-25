@@ -20,15 +20,8 @@ class DictManifest{
 		for(let i = 0; i < arr.length; i++) {
 			arr[i] = arr[i].replace("\r","");
 		}
-		
 		return arr;
 	}
-	
-
 };
-
-// const characterManifest = new DictManifest();
-
-// console.log(characterManifest.manifest("../characters.dict"))
 
 module.exports = DictManifest;

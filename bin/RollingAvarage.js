@@ -9,6 +9,7 @@ class RollingAvarage {
 		return split;
 	};
 	getAvarage(arr) {
+		let sum = 0;
 		const tokens = this.tokenize(arr);
 		const avgArr = [];
 		for(let i = 0 ; i < tokens.length; i++) {
@@ -18,9 +19,12 @@ class RollingAvarage {
 			}
 			for(let j = 0; j < tokens[i].length; j++) {
 				obj.hour = tokens[i][j].hour;
-				obj.avg+= tokens[i][j].score / tokens[i].length;
+				
+				sum+=tokens[i][j].score;
 			}
+			obj.avg = sum/tokens[i].length
 			avgArr.push(obj);
+			sum = 0;
 		};
 		return avgArr;
 	}
@@ -48,12 +52,7 @@ class RollingAvarage {
 					currentTime = i.hour
 					hours.push(currentTime);
 				}
-			
-			
-			
-			
 		})
-
 		return hours;
 	}
 }

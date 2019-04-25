@@ -2,7 +2,7 @@ console.log(process.pid+" HAS STARTED")
 
 
 const mongo = require("mongodb").MongoClient;
-const url = "mongodb://134.209.9.142:27017";
+const url = "mongodb://localhost:27017";
 const DictManifest = require("./bin/dictManifest.js");
 const characters = new DictManifest();
 const dictionairy = characters.manifest("./characters.dict");
@@ -13,12 +13,11 @@ process.on("message", msg => {
 	if(msg.in_reply_to_status_id === null && msg.text.indexOf(pattern) < 0 && msg.quoted_status_id === undefined) {
 		const forDb = nicerObj(msg);
 		if(forDb){
-			toDB(forDb);
 			process.send(forDb);
+			toDB(forDb);
 		} 
 	}
 })
-
 
 function toDB(obj) {
 	console.log("insertion");
@@ -32,8 +31,6 @@ function toDB(obj) {
 		})		
 	})
 }
-
-
 
 function nicerObj(input) {
 	const pattern = new RegExp("(?:https?|ftp):\/\/[\n\S]+","g")
@@ -66,9 +63,3 @@ function nicerObj(input) {
 		return obj;
 	}
 }
-
-
-
-
-
-

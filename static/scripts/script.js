@@ -2,66 +2,151 @@ const socket = io.connect(window.location.origin);
 
 const register = [];
 
-
-function constructChart(d) {
-	const width = 800,
-	height = 500;
+const data = [];
 
 
+//D3JS CHART GENERATOR
 
-	const svg = d3.select("body")
-		.append("svg")
-		.attr("width", width)
-		.attr("height", height);
+function getMinMax(d) {
+	
+}
 
-	const y = d3.scaleLinear().range([height - 200,0]);
-	const x = d3.scaleLinear().range([0, width - 200]);
 
-	y.domain(d3.extent(d,(d) => {
-		return d.avg;
-	}));
 
-	x.domain(d3.extent(d,d => {
-		return d.hour;
-	}));
+class Chart{
+	constructor() {
+		this.height = 500;
+		this.width = 800;
+		this.scaleY = d3.scaleLinear().range([0,this.height-180]);
+		this.scaleX = d3.scaleLinear().range([0,this.width]);
+		this.yAxis = d3.axisLeft(this.scaleY);
+		this.xAxis = d3.axisBottom(this.scaleX);
 
-	//x.domain()
+	}
 
-	const line = d3.line()
-		.x(function(d) {
-			return x(d.hour);
+	createLegend(n,c) {
+		const legend = d3.select("#legend");
+
+		legend
+			.append("div")
+			.attr("class","legend legend-"+n)
+				.append("div")
+				.style("background-color", c)
+				.append("div")
+				.text(n)
+
+		const item = d3.select(".legend-"+n);
+		item.on("mouseover", function(){
+			const lines = document.querySelectorAll(".line");
+			for(let i = 0; i < lines.length;i++) {
+				const classes = Array.from(lines[i].classList);
+				if(!classes.includes("line-"+n)) {
+					lines[i].classList.add("fade");
+				}
+			}
 		})
-		.y(function(d) {
-			return y(d.avg);
-		});
+		.on("mouseout", function(){
+			const lines = document.querySelectorAll(".line");
+				for(let i = 0; i < lines.length;i++) {
+					lines[i].classList.remove("fade");
+				}
+		})
+	}
+
+	getMinMaxY(d) {
+		const values = [];
+		for(let i = 0; i < d.length; i++) {
+			for(let j = 0; j < d[i].values.length; j++) {
+				values.push(d[i].values[j].avg);
+			};
+		};
+		return d3.extent(values);
+	}
+
+	getMinMaxX(d) {
+		console.log(d)
+		const values = [];
+		for(let i = 0; i < d.length; i++) {
+			for(let j = 0; j < d[i].values.length; j++) {
+				values.push(d[i].values[j].hour);
+			};
+		};
+		return d3.extent(values);
+	}
+
+	constructLine(d) {
+		console.log("construct")
+		const svg = d3.select("svg");
+		const line = d3.line().x(function(d) {
+			return this.scaleX(d.hour);
+			}.bind(this)).y(function(d) {
+			return this.scaleY(d.avg);
+			}.bind(this));
+			
+			const randColor = "hsl(" + Math.random() * 360 + ",100%,50%)";
+			  
+			this.createLegend(d.name,randColor);
+			svg.append("path")
+				.attr("class",["line line-"+d.name])
+				.style("transform", "translate(50px,20px)")
+				.style("stroke",randColor)
+				.attr("d", line(d.values.map((i) => {
+					return i
+				})))
+	
 
 
+	};
 
-	const yAxis = d3.axisLeft(y).ticks(5)
-	const xAxis = d3.axisBottom(x).ticks(15);
+	constructChart(d) {
+		const minMaxY = this.getMinMaxY(d);
+		const minMaxX = this.getMinMaxX(d);
+		let y = this.scaleY.domain([10,-10]);
+		let x = this.scaleX.domain([0,23]);
+		const svg = d3.select("body")
+			.append("svg")
+			.attr("width",this.width)
+			.attr("height",this.height);
 
-	svg.append("g")
-		.attr("class","y-axis")
-		.style("transform", "translate(40px,20px)")
-		.call(yAxis);
+		svg.append("g")
+			.attr("class", "axis-y")
+			.style("transform","translate(50px,40px)")
+			.call(this.yAxis);
 
-	svg.append("g")
-		.attr("class","x-axis")
-		.style("transform", "translate(40px,"+(height-180)+"px)")
-		.call(xAxis);
+		svg.append("g")
+			.attr("class", "axis-x")
+			.style("transform","translate(50px,"+(this.height-140)+"px)")
+			.call(this.xAxis);
 
-	svg.append("path")
-		.attr("class","line")
-		.style("transform", "translate(40px,20px)")
-		.attr("d", line(d));
+		this.constructLine(d[0]);
+	}
 
-	function getRandomInt(min, max) {
-	    min = Math.ceil(min);
-	    max = Math.floor(max);
-	    return Math.floor(Math.random() * (max - min + 1)) + min;
+	updateChartUI(d) {
+		//const minMaxY = this.getMinMaxY(d);
+		const svg = d3.select("body");
+		//const y = this.scaleY.domain(minMaxY);
+
+		d3.select(".axis-y").call(this.yAxis);
+
+		for(let i = 0; i < d.length; i++) {
+			
+			if(!document.querySelector(".line-"+d[i].name)) {
+				console.log("boo")
+				this.constructLine(d[i]);
+			};
+		};
+
+
 	}
 }
 
+
+
+
+let chart = null;
+
+
+// NAMESPACE CLASS FOR CHARACTER REGISTRY
 
 class NS{
 	constructor(name) {
@@ -69,11 +154,22 @@ class NS{
 		this.ns = io.connect(window.location.origin+"/"+name)
 		this.ns.on("avg", (d) => {
 			console.log(d)
-			constructChart(d.array);
+			data.push(d);
+			
+			if(!document.querySelector("svg")) {
+				chart = new Chart();
+				chart.constructChart(data);
+			}else {
+				chart.updateChartUI(data);
+			}
+			
 		})
 
 	};
 }
+
+
+//GUI CODE
 
 function clickHandler() {
 	if(!register.find((i) => {
