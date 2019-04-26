@@ -1,6 +1,6 @@
 const RollingAvarage = require("./RollingAvarage.js");
 const mongo = require("mongodb").MongoClient;
-const url = "mongodb://localhost:27017";
+const url = "mongodb://134.209.9.142:27017";
 
 class NewAvarage{
 	constructor(name) {
