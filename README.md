@@ -32,11 +32,11 @@ I also had the idea to create a smilarity matrix about characters mentions durin
 
 #### Random time of the week
 
-![skrrt]("./doc/random.png")
+![skrrt](./doc/random.png)
 
 #### During airtime
 
-![skrrt]("./doc/during-airtime.png")
+![skrrt](./doc/during-airtime.png)
 
 ### Cosine similarity
 Cosine similarity calculates the the similarity of text by comparing the Cosine of two vectors.
